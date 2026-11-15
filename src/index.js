@@ -6,6 +6,9 @@ import './ble/obc/controls.js';
 import './watch.js';
 import './course.js';
 import './lock.js';
+import './race/race-controller.js';
+import './race/views/race-views.js';
+import './race/demo-rider.js';
 
 function startServiceWorker() {
     if('serviceWorker' in navigator) {

@@ -251,9 +251,12 @@ class WorkoutGraph extends HTMLElement {
         }
 
         const index                 = args.index ?? 0;
-        const lapTime               = args.lapTime ?? this.workout.intervals[index].duration;
         const $dom                  = args.dom;
         const $parent               = args.parent;
+        // the graph is not rendered while the home page is hidden (race mode)
+        if(!this.workout?.intervals?.[index] || !$dom?.intervals?.[index]) return;
+
+        const lapTime               = args.lapTime ?? this.workout.intervals[index].duration;
         const rect                  = $dom.intervals[index].getBoundingClientRect();
         const left                  = rect.left - $parent.getBoundingClientRect().left;
         const lapPercentageComplete = 1 - (lapTime / this.workout.intervals[index].duration);

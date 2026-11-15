@@ -47,7 +47,8 @@ function IDB(args = {}) {
                 case 0: createStores(storeNames);
                 case 1: update(storeNames);
                 case 2: update(storeNames);
-                case 3: latest(storeNames);
+                case 3: update(storeNames);
+                case 4: latest(storeNames);
                 }
             };
             openReq.onerror = function() {
@@ -78,8 +79,6 @@ function IDB(args = {}) {
         if (!db.objectStoreNames.contains(name)) {
             db.createObjectStore(name, {keyPath: keyPath});
             console.log(`:idb :create-store '${name}'`);
-        } else {
-            console.warn(`:idb :error :createStore 'trying to create store with existing name: ${name}'`);
         }
     }
 

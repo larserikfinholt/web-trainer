@@ -66,7 +66,7 @@ function pickGhost(rides, courseId, laps) {
         r.courseId === courseId &&
         r.laps === laps &&
         r.completed === true &&
-        Array.isArray(r.samples) && r.samples.length > 1
+        ((Array.isArray(r.samples) && r.samples.length > 1) || (r.sampleCount ?? 0) > 1)
     );
     candidates.sort((a, b) => (b.finishedAt ?? 0) - (a.finishedAt ?? 0));
     return candidates[0];

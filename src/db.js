@@ -102,6 +102,17 @@ let db = {
     // Course
     courseIndex: 0,
 
+    // Race mode
+    virtualGrade: null,
+    raceSetup: {},
+    race: null,
+    raceMessage: null,
+    raceGhost: {available: false},
+    raceResult: null,
+    raceScreen: 'select',
+    raceActivityName: null,
+    rides: [],
+
     // Request ANT+ Device
     antSearchList: [],
     antDeviceId: {},
@@ -430,8 +441,8 @@ xf.reg('app:start', async function(_, db) {
 
     db.sources = models.sources.set(models.sources.restore());
 
-    // IndexedDB Schema Version 3
-    await idb.start('store', 3, ['session', 'workouts', 'activity']);
+    // IndexedDB Schema Version 4: adds 'rides' (race history with per-second samples)
+    await idb.start('store', 4, ['session', 'workouts', 'activity', 'rides']);
     db.workouts = await models.workouts.restore();
     db.activity = await models.activity.restore();
     db.workout = models.workout.restore(db);
@@ -453,6 +464,9 @@ xf.reg('app:start', async function(_, db) {
 
     const sound = Sound({volume: db.volume});
     sound.start();
+
+    // storage is open and restored; modules that need IndexedDB start here
+    xf.dispatch('app:ready');
 
     if(!config.isOffline()) {
         models.api.start();

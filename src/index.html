@@ -15,6 +15,7 @@
         <meta name="description" content="indoor cycling app for workouts with smart trainers and power meters over bluetooth">
 
         <link href="css/flux.css" rel="stylesheet"/>
+        <link href="css/race.css" rel="stylesheet"/>
         <link rel="manifest" href="./manifest.webmanifest">
     </head>
 
@@ -33,7 +34,36 @@
             <navigation-stack>
             <page-group prop="page">
                 <compatibility-check></compatibility-check>
-                <div id="home-page" class="page active" page="home">
+                <div id="race-page" class="page active" page="race">
+                    <race-app>
+                        <div class="race-screen race-screen-select" data-screen="select">
+                            <header class="race-header">
+                                <div class="race-brand"><span class="race-brand-bar"></span>Rundløype</div>
+                                <div class="race-header-connections">
+                                    <connection-switch for="ble:controllable" class="connection-switch race-conn">
+                                        <div class="connection-switch--indicator off"></div>
+                                        <div class="connection-switch--label">Rulle</div>
+                                    </connection-switch>
+                                    <connection-switch for="ble:heartRateMonitor" class="connection-switch race-conn">
+                                        <div class="connection-switch--indicator off"></div>
+                                        <div class="connection-switch--label">Puls</div>
+                                    </connection-switch>
+                                    <page-btn class="race-settings-btn" prop="page" effect="page-set" param="settings" title="Innstillinger">
+                                        <svg width="22" height="22"><use href="#icon--settings"></use></svg>
+                                    </page-btn>
+                                </div>
+                            </header>
+                            <race-select></race-select>
+                        </div>
+                        <div class="race-screen race-screen-ride" data-screen="ride">
+                            <race-ride></race-ride>
+                        </div>
+                        <div class="race-screen race-screen-result" data-screen="result">
+                            <race-result></race-result>
+                        </div>
+                    </race-app>
+                </div> <!-- end race-page -->
+                <div id="home-page" class="page" page="home">
                     <div id="home-page-wrapper">
 
                         <header class="connections-header page-header">
@@ -1644,17 +1674,18 @@
                             <div class="menu--btn--label">Settings</div>
                         </page-btn>
                         <page-btn id="home-tab-btn"
-                                  class="menu--btn active"
+                                  class="menu--btn"
                                   prop="page"
                                   effect="page-set"
-                                  param="home">
+                                  param="race">
                             <svg class="menu--btn--icon" width="24" height="24">
                                 <use href="#icon--home"></use>
                             </svg>
-                            <div class="menu--btn--label">Home</div>
+                            <div class="menu--btn--label">Løype</div>
                         </page-btn>
                         <page-btn id="workouts-tab-btn"
                                   class="menu--btn"
+                                  style="display: none;"
                                   prop="page"
                                   effect="page-set"
                                   param="workouts">

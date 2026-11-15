@@ -315,9 +315,9 @@ class Mode extends Model {
 
 class Page extends Model {
     postInit(args) {
-        this.values = ['settings', 'home', 'workouts'];
+        this.values = ['race', 'settings', 'home', 'workouts'];
     }
-    defaultValue() { return 'home'; }
+    defaultValue() { return 'race'; }
     defaultIsValid(value) { return this.values.includes(value); }
 }
 
@@ -565,13 +565,14 @@ class Activity extends Model {
     name = 'activity';
     postInit(args) {
         this.api = args.api;
-        this.capacity = 7;
+        // Keep history; the old limit of 7 silently deleted older .fit files.
+        this.capacity = 500;
     }
     defaultValue() { return []; }
     createFromCurrent(db) {
         const id = uuid();
         const blob = fileHandler.toBlob(this.encode(db));
-        const name = db.workout?.meta?.name ?? 'Powered by Auuki workout';
+        const name = db.raceActivityName ?? db.workout?.meta?.name ?? 'Powered by Auuki workout';
 
         const summary = {
             id,
@@ -1098,7 +1099,7 @@ function Session(args = {}) {
             speed:      speed,
             heart_rate: db.heartRate,
             distance:   db.distance,
-            grade:      db.slopeTarget,
+            grade:      exists(db.virtualGrade) ? db.virtualGrade : db.slopeTarget,
             altitude:   db.altitude,
             position_lat:                 db.position_lat,
             position_long:                db.position_long,
@@ -1510,7 +1511,7 @@ class VirtualState extends MetaProp {
     }
     onWeight(weight) {
         this.riderWeight = weight;
-        this.systemWeight = this.riderWeight + this.equipmentWeight;
+        this.mass = this.riderWeight + this.equipmentWeight;
     }
     onStarted() {
         this.lastUpdate = Date.now();
@@ -1528,9 +1529,13 @@ class VirtualState extends MetaProp {
             return;
         };
 
+        // In race mode the trainer gets an intensity-scaled grade, but the
+        // virtual speed must follow the real road.
+        const slope = exists(db.virtualGrade) ? db.virtualGrade : db.slopeTarget;
+
         const { speed, distance, altitude, ascent } = this.cycling.virtualSpeedCF({
             power:    db.power,
-            slope:    db.slopeTarget / 100,
+            slope:    slope / 100,
             distance: db.distance,
             altitude: db.altitude,
             ascent:   db.ascent,
