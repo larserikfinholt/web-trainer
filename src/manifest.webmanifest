@@ -1,13 +1,13 @@
 {
-    "name": "Auuki",
-    "short_name": "Auuki",
-    "description": "Cycling Structured Training",
+    "name": "Rundløype",
+    "short_name": "Rundløype",
+    "description": "Rundløyper på smart-rulle, basert på Auuki",
     "start_url": "/",
     "display": "standalone",
     "orientation": "any",
     "scope": "/",
-    "theme_color": "#35363a",
-    "background_color": "#28272D",
+    "theme_color": "#121820",
+    "background_color": "#0b0f14",
     "icons": [
         {
             "src": "./images/logo/logo-192.png",

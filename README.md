@@ -1,6 +1,60 @@
 <img alt="Auuki Indoor Cyling app for Structured Training" src="https://github.com/user-attachments/assets/292a3216-2f52-4994-9b15-614446e41912" />
 
-# Auuki
+# Rundløype (fork av Auuki)
+
+Denne forken gjør om Auuki til en **frittstående app for rundløyper**: velg en av tre
+lukkede løyper, antall runder og intensitet, og kjør mot en «ghost» av din egen forrige
+tur på samme løype. Ingen konto, ingen backend, ingen kall til api.auuki.com – alt lagres
+lokalt i nettleseren. Bluetooth-tilkobling, fysikkmodell, FIT-eksport og innstillinger er
+Auukis originale kode (AGPL-3.0, se [LICENSE.txt](./LICENSE.txt) og «About» i appen).
+
+## Kjøre lokalt
+
+```sh
+npm install
+npm start            # http://localhost:1234
+npm run build        # statisk bygg i dist/ (klar for Cloudflare Pages: build "npm run build", output "dist")
+npx jest test/race   # tester for løypegeometri, intensitet, ghost og race-motor
+```
+
+Bruk Chrome/Edge med Bluetooth. Koble til rulla med «Rulle»-knappen øverst, eventuelt
+pulsbelte med «Puls». Vekt og FTP settes under tannhjulet (Innstillinger) – vekten brukes
+i fysikkmodellen.
+
+**Uten rulle:** åpne `http://localhost:1234/?demo=1` for en simulert rytter.
+`?demo=1&warp=40` legger på 40 m/s ekstra for å spole gjennom runder under testing.
+
+## Slik fungerer løypemodus
+
+* **Løyper** er definert som data i [src/race/courses.js](./src/race/courses.js): kontrollpunkter for
+  veien, høydeprofil per meter og navngitte segmenter (bakke/spurt). Alt som tegnes,
+  posisjoneres og sendes til rulla, beregnes fra denne ene definisjonen i
+  [geometry.js](./src/race/geometry.js), slik at kart, høydeprofil og simulering alltid stemmer.
+* **Fremdrift** kommer fra målt watt gjennom Auukis fysikkmodell (`virtualSpeedCF`), ikke fra
+  svinghjulsfarten. Fysikken bruker alltid løypas *ekte* stigning.
+* **Belastning**: rulla settes i simuleringsmodus (FTMS «Simulation Parameters»), og
+  stigningen oppdateres hvert sekund med jevn overgang (maks 2 %/s) og ~8 m «lookahead».
+* **Intensitet** (50–150 %, steg 5) skalerer **bare** stigningen som sendes til rulla:
+  `sendt = løypestigning × intensitet / 100`, klemt til −8…+12 %. 100 % er løypa slik den er
+  tegnet. Farten i løypa påvirkes ikke direkte, så alle turer på samme løype er sammenlignbare
+  – lavere intensitet gjør det bare lettere å holde høyere watt. Elite Zumo simulerer maks
+  ~12 %, derfor klemmes bratte partier ved høy intensitet (vises som «rullegrense» i appen).
+* **Spurtsoner** endrer ikke belastningen; de er en invitasjon til innsats og får egen tid.
+* **Autopause** skjer ved stillstand (fart ≈ 0 og 0 W i 5 s), ikke bare ved 0 W, slik at
+  nedoverbakker uten tråkk ikke stopper klokka. Gjenopptas automatisk når du tråkker.
+* **Ghost** er forrige *fullførte* tur på samme løype med samme antall runder. Posisjon per
+  sekund lagres i IndexedDB (`rides`) uten antallsbegrensning. Mangler sammenligningsgrunnlag,
+  sies det tydelig i løypevalget.
+* **Etter økta**: rundetider, bakke-/spurttider og snitt vises, og .fit-filen kan lastes ned
+  (Auukis FIT-koder). Historikken ligger under løypevalget.
+
+Auukis opprinnelige sider (ERG-/workout-visning) finnes fortsatt i koden, men er skjult fra
+menyen. Innlogging, Strava/Intervals/TrainingPeaks og Cloudflare Turnstile er deaktivert via
+`OFFLINE: true` i [src/models/config.js](./src/models/config.js).
+
+---
+
+# Auuki (original README)
 Auuki is a powerful, no-nonsense app built for hammering out **structured workouts** on a smart trainer, right in your browser. No installs, no dependencies, no slow updates taking from precious training time.
 
 **Key Features**:

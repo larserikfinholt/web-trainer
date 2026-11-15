@@ -53,6 +53,25 @@ class RaceApp extends HTMLElement {
         const riding = this.page === 'race' && this.screen === 'ride';
         document.body.classList.toggle('race-riding', riding);
         document.body.classList.toggle('race-page', this.page === 'race');
+        this.fullscreen(riding);
+    }
+    // On touch devices (phone on the handlebar) go fullscreen while riding.
+    // Both calls need a user gesture; START is one, so this is best effort.
+    async fullscreen(on) {
+        const touch = window.matchMedia?.('(pointer: coarse)').matches;
+        if(!touch) return;
+        try {
+            if(on && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+                await document.documentElement.requestFullscreen({navigationUI: 'hide'});
+                await screen.orientation?.lock?.('landscape').catch(() => {});
+            }
+            if(!on && document.fullscreenElement) {
+                screen.orientation?.unlock?.();
+                await document.exitFullscreen();
+            }
+        } catch(e) {
+            console.log(':race :fullscreen', e?.message);
+        }
     }
 }
 customElements.define('race-app', RaceApp);
