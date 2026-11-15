@@ -1,25 +1,52 @@
-<img alt="Auuki Indoor Cyling app for Structured Training" src="https://github.com/user-attachments/assets/292a3216-2f52-4994-9b15-614446e41912" />
+<img alt="Rundløype – Fjellpasset med hårnålssvinger, bakke- og spurtmarkører, pauseskjerm" src="./doc/images/race-mode-fjellpasset.png" />
 
-# Rundløype (fork av Auuki)
+# Rundløype
 
-Denne forken gjør om Auuki til en **frittstående app for rundløyper**: velg en av tre
-lukkede løyper, antall runder og intensitet, og kjør mot en «ghost» av din egen forrige
-tur på samme løype. Ingen konto, ingen backend, ingen kall til api.auuki.com – alt lagres
-lokalt i nettleseren. Bluetooth-tilkobling, fysikkmodell, FIT-eksport og innstillinger er
-Auukis originale kode (AGPL-3.0, se [LICENSE.txt](./LICENSE.txt) og «About» i appen).
+Rundløype er en **frittstående nettleserapp for smart-rulle** med fokus på rundløyper,
+bakker, spurtsoner og konkurranse mot din egen forrige tur. Velg en av tre lukkede løyper,
+antall runder og intensitet, og kjør mot en gjennomsiktig «ghost» av forrige gang du syklet
+samme løype. Alt lagres lokalt i nettleseren – ingen konto, ingen backend, ingen eksterne kall.
+
+Appen er en fork av [Auuki](https://github.com/dvmarinoff/Auuki) av Dimitar Marinov og
+bygger på Auukis Bluetooth-stack, fysikkmodell, FIT-koder og innstillinger. Se
+[Lisens og kreditering](#lisens-og-kreditering).
+
+## Funksjoner
+
+**Velg løype**
+* Tre fiktive rundløyper med forhåndsvisning, lengde, høydemeter og høydeprofil:
+  * **Fjordrunden** – 4,2 km, 37 hm. Lett og rask, to små kneiker og én spurt.
+  * **Skogsringen** – 4,8 km, 110 hm. Kupert, to skikkelige bakker og en lang spurtstrekning.
+  * **Fjellpasset** – 6,5 km, 195 hm. Lang stigning (opptil 9,7 %) med hårnålssvinger, to spurter.
+* 1–4 runder, intensitet 50–150 %, ghost av/på. Sveip mellom løypekortene på mobil.
+* Historikk over alle turer, med .fit-nedlasting og sletting. Ingen begrensning i antall.
+
+**Underveis**
+* Hele løypa i lett isometrisk 2.5D-perspektiv der veien løftes etter høyden; syklist og ghost
+  følger veien nøyaktig.
+* Oransje BAKKE-skilt og limegrønne SPURT-porter på riktig sted, start-/mållinje, rundeteller.
+* Store tall for watt, kadens og tid; puls når tilgjengelig.
+* Varsel om neste bakke/spurt med avstand, stigning og høydemeter. Tidsforskjell mot forrige tur.
+* Sammenleggbart overlay med intensitet, høydeprofil med posisjonsmarkør og store
+  pause-/avsluttknapper. Korte tilbakemeldinger ved fullført bakke, spurt og runde.
+* Fullskjerm og låst liggende skjerm på berøringsenheter. Stående skjerm fungerer også.
+
+**Etterpå**
+* Rundetider og bakke-/spurttider sammenlignet med forrige tur, snitt/maks watt, puls, kadens,
+  distanse og høydemeter. .fit-eksport.
 
 ## Kjøre lokalt
 
 ```sh
 npm install
 npm start            # http://localhost:1234
-npm run build        # statisk bygg i dist/ (klar for Cloudflare Pages: build "npm run build", output "dist")
+npm run build        # statisk bygg i dist/ (Cloudflare Pages: build "npm run build", output "dist")
 npx jest test/race   # tester for løypegeometri, intensitet, ghost og race-motor
 ```
 
-Bruk Chrome/Edge med Bluetooth. Koble til rulla med «Rulle»-knappen øverst, eventuelt
-pulsbelte med «Puls». Vekt og FTP settes under tannhjulet (Innstillinger) – vekten brukes
-i fysikkmodellen.
+Bruk Chrome/Edge med Bluetooth (Android: Chrome). Koble til rulla med «Rulle»-knappen øverst,
+eventuelt pulsbelte med «Puls». Vekt og FTP settes under tannhjulet (Innstillinger) – vekten
+brukes i fysikkmodellen. Testet med Elite Zumo (FTMS).
 
 **Uten rulle:** åpne `http://localhost:1234/?demo=1` for en simulert rytter.
 `?demo=1&warp=40` legger på 40 m/s ekstra for å spole gjennom runder under testing.
@@ -48,9 +75,30 @@ i fysikkmodellen.
 * **Etter økta**: rundetider, bakke-/spurttider og snitt vises, og .fit-filen kan lastes ned
   (Auukis FIT-koder). Historikken ligger under løypevalget.
 
-Auukis opprinnelige sider (ERG-/workout-visning) finnes fortsatt i koden, men er skjult fra
-menyen. Innlogging, Strava/Intervals/TrainingPeaks og Cloudflare Turnstile er deaktivert via
-`OFFLINE: true` i [src/models/config.js](./src/models/config.js).
+Koden for løypemodus ligger i [src/race/](./src/race/). Auukis opprinnelige sider
+(ERG-/workout-visning) finnes fortsatt i koden, men er skjult fra menyen. Innlogging,
+Strava/Intervals/TrainingPeaks og Cloudflare Turnstile er deaktivert via `OFFLINE: true` i
+[src/models/config.js](./src/models/config.js).
+
+## Lisens og kreditering
+
+Dette prosjektet er en **modifisert versjon** av [Auuki](https://github.com/dvmarinoff/Auuki),
+Copyright © Dimitar Marinov ([@dvmarinoff](https://github.com/dvmarinoff)), lisensiert under
+[GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
+
+I samsvar med AGPL-3.0:
+* Denne forken er lisensiert under samme lisens, AGPL-3.0. Se [LICENSE.txt](./LICENSE.txt).
+* Fullstendig kildekode for den modifiserte versjonen er tilgjengelig i dette repoet,
+  og det er lenket til fra «About» i appen (Innstillinger).
+* Endringene fra originalen fremgår av git-historikken. Oppsummert: ny løypemodus under
+  `src/race/`, frakobling av Auukis backend/konto/integrasjoner, system-font i stedet for
+  Google Fonts, fjernet 7-aktiviteters-grensen, og små feilrettinger i fysikkmodell og
+  workout-graf.
+* Opprinnelige opphavsrettsmerknader, lisens og kreditering er beholdt.
+
+Auuki er bygget på: [FIT SDK](https://developer.garmin.com/fit/overview/)-profiler, Martin et
+al. sin sykkelfysikkmodell, og Web Bluetooth. Konseptbildet som ga visuell retning er laget
+av prosjekteieren.
 
 ---
 
