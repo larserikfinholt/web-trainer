@@ -26,7 +26,7 @@ function Auth(args = {}) {
     const turnstile_site_key = config.get().TURNSTILE_SITE_KEY;
 
     let _loggedIn = false;
-    let _hasApi = true;
+    let _hasApi = !config.isOffline();
     let _resetToken = '';
 
     let _turnstileLoaded = false;

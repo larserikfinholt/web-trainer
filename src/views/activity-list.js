@@ -1,6 +1,7 @@
 import { xf, formatDate, escapeHtml, } from '../functions.js';
 import { models } from '../models/models.js';
 import { formatTime, } from '../utils.js';
+import config from '../models/config.js';
 
 class ActivityList extends HTMLElement {
     constructor() {
@@ -25,7 +26,7 @@ class ActivityList extends HTMLElement {
         self.insertAdjacentHTML("afterbegin", self.template(this.index, activity));
         xf.dispatch(`action:activity:${this.id(activity)}`, ':toggleExpand');
 
-        if(this.childElementCount > 3) {
+        if(this.childElementCount > 50) {
             self.removeChild(self.lastElementChild);
         }
 
@@ -63,6 +64,26 @@ class ActivityList extends HTMLElement {
         const intervalsStatus = escapeHtml(status.intervals ?? 'none');
         const stravaStatus = escapeHtml(status.strava ?? 'none');
         const trainingPeaksStatus = escapeHtml(status.trainingPeaks ?? 'none');
+        const uploadActions = config.isOffline() ? '' : `
+                                    <view-action
+                                        class="activity--action action--intervals"
+                                        action=":intervals:upload"
+                                        topic=":activity:${id}">
+                                        <svg class="activity--icon intervals--icon" width="24" height="24">
+                                            <use href="#icon--intervals" />
+                                        </svg>
+                                        <div class="connection-icon-switch--indicator ${intervalsStatus} intervals"></div>
+                                    </view-action>
+
+                                    <view-action
+                                        class="activity--action"
+                                        action=":strava:upload"
+                                        topic=":activity:${id}">
+                                        <svg class="activity--icon strava--icon" width="24" height="24">
+                                            <use href="#icon--strava" />
+                                        </svg>
+                                        <div class="connection-icon-switch--indicator ${stravaStatus} strava"></div>
+                                    </view-action>`;
 
         return `
             <activity-item id="i${i}--activity--item" class="some" data-id="${id}">
@@ -97,25 +118,7 @@ class ActivityList extends HTMLElement {
                                 </div>
                                 <div class="activity--actions">
                                     <div></div>
-                                    <view-action
-                                        class="activity--action action--intervals"
-                                        action=":intervals:upload"
-                                        topic=":activity:${id}">
-                                        <svg class="activity--icon intervals--icon" width="24" height="24">
-                                            <use href="#icon--intervals" />
-                                        </svg>
-                                        <div class="connection-icon-switch--indicator ${intervalsStatus} intervals"></div>
-                                    </view-action>
-
-                                    <view-action
-                                        class="activity--action"
-                                        action=":strava:upload"
-                                        topic=":activity:${id}">
-                                        <svg class="activity--icon strava--icon" width="24" height="24">
-                                            <use href="#icon--strava" />
-                                        </svg>
-                                        <div class="connection-icon-switch--indicator ${stravaStatus} strava"></div>
-                                    </view-action>
+                                    ${uploadActions}
                                     <!--
                                     <view-action
                                         class="activity--action"
@@ -123,8 +126,8 @@ class ActivityList extends HTMLElement {
                                         topic=":activity:${id}">
                                         <div class="tp-logo--icon">TP</div>
                                         <div class="connection-icon-switch--indicator ${trainingPeaksStatus} tp"></div>
-                                    -->
                                     </view-action>
+                                    -->
                                     <view-action
                                         class="activity--action action--download"
                                         action=":download"

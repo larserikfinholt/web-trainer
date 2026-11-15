@@ -4,6 +4,7 @@ import { Sound } from './sound.js';
 import { idb } from './storage/idb.js';
 import { ControlMode, } from './ble/enums.js';
 import { TimerStatus, } from './activity/enums.js';
+import config from './models/config.js';
 
 // import { trainerMock } from './simulation-scripts.js';
 
@@ -434,7 +435,9 @@ xf.reg('app:start', async function(_, db) {
     db.workouts = await models.workouts.restore();
     db.activity = await models.activity.restore();
     db.workout = models.workout.restore(db);
-    models.planned.restore();
+    if(!config.isOffline()) {
+        models.planned.restore();
+    }
 
     await models.session.restore(db);
     xf.dispatch('workout:restore');
@@ -451,7 +454,9 @@ xf.reg('app:start', async function(_, db) {
     const sound = Sound({volume: db.volume});
     sound.start();
 
-    models.api.start();
+    if(!config.isOffline()) {
+        models.api.start();
+    }
     // TODO: remove
     // xf.dispatch(`ui:page-set`, 'workouts');
 

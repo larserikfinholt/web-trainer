@@ -223,8 +223,8 @@ input, svg, a,
 
 /* Variables */
 :root {
-    --ssb-font-family: 'Roboto', sans-serif;
-    --ssr-font-family: 'Roboto', sans-serif;
+    --ssb-font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --ssr-font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
 body {

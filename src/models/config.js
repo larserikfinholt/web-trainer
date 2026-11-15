@@ -6,6 +6,9 @@ class Config {
 
     constructor() {
         this.env = {
+            // Standalone mode: no Auuki account, no calls to api.auuki.com,
+            // no third-party integrations. Local storage and file import/export only.
+            OFFLINE: true,
             // PWA_URI: "https://localhost:1234", // dev
             // API_URI: "https://localhost:8080", // dev
             // TURNSTILE_SITE_KEY: '1x00000000000000000000AA', // dev
@@ -24,6 +27,9 @@ class Config {
     }
     get() {
         return this.env;
+    }
+    isOffline() {
+        return this.env.OFFLINE === true;
     }
 }
 
